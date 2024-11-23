@@ -71,7 +71,6 @@ int main()
 	setlocale(LC_ALL,"portuguese");//funcao para permitir caracteres especiais
 	Lista *lista = NULL;
 	
-	//do-while para o menu principal
 	do{
 		system("cls");
 		printf("============CHECKMATE ORGANIZER!============\n");
