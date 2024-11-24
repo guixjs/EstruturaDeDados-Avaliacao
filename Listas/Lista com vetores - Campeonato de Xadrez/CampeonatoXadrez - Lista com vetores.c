@@ -191,6 +191,10 @@ int buscarElemento(Lista *lista,char nomeBusca [50]){
 
 **************************************************/
 int carregarArquivos(Lista *lista){
+	if(lista ==NULL){
+		printf("A lista não foi criada\n");
+		return 0;
+	}
 	int i,qtdCadastrados; //variaveis temporarias, para que em cada interacao do for, os nomes lidos sejam salvos nelas e mandandos
 	//como parametros para a funcao inserirElemento
 	char nome [50], sexo;
@@ -329,7 +333,7 @@ int inserirElementoID(Lista *lista,char nome[50],int idade,char sexo,int rating,
 
     /*Verificando se a lista foi criada*/
     if(lista == NULL){
-        printf("A lista nao foi criada\n");
+        printf("A lista nao foi criada\n");	
         return 0;
     }
 
@@ -607,13 +611,15 @@ void menuOpcoes(Lista *lista){
 			system("cls");
 			printf("MENU PRINCIPAL>OPÇÕES TORNEIO>TAMANO DA LISTA\n=====================\n");
 			tamanho = tamanhoLista(lista);
-			if(tamanho>1){
-				strcpy(mensagem,"elementos");
+			if(tamanho==1){
+				strcpy(mensagem,"competidor");
 			}else{
-				strcpy(mensagem,"elemento");
+				strcpy(mensagem,"competidores");
 			}
 			if(tamanho>0){
 				printf("A lista possui %d %s",tamanho,mensagem);	
+			}else{
+				printf("A lista não possui competidores\n");
 			}
 			getch();
 			break;
@@ -774,6 +780,14 @@ int tamanhoLista(Lista *lista){
 
 **************************************************/
 int salvarArquivo(Lista *lista){
+	if(lista ==NULL){
+		printf("A lista não foi criada\n");
+		return 0;
+	}
+	if(lista->id ==0){
+		printf("A lista está vazia\n");
+		return 0;
+	}
 	int i,qtdCadastrados;
 	FILE *arquivo = fopen("Lista Competidores.txt", "w");
 	if(arquivo == NULL){
