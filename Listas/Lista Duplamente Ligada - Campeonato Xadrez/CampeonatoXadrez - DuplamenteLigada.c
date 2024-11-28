@@ -1,17 +1,25 @@
-/****************************************************************** 
- * Nome: Lista encadeada                                          *
- * Descricao: Implementacao de lista encadeada. Esse codigo possui*
- *            as principais operacoes da lista, como:             *
- *            criar lista,                                        *
- *            inserir elemento,                                   *
- *            remover elemento,                                   *
- *            buscar elemento,                                    *
- *            mostrar elementos,                                  *
- *            atualizar elementos,                                *
- *            excluir lista.                                      *
- * Autor: Mayrton Dias                                            *
- * Ultima alteracao: 08/10/2024                                   *
- ******************************************************************/
+/******************************************************************* 
+Nome: Campeonato de Xadrez - Lista Duplamente Encadeada                                      
+Descricao: Sistema para o gerenciamento de um campeonato de xadrez
+             Esse codigo possui as principais operacoes da lista, como:                                         
+             criar lista,                                       
+             inserir elemento (Id, Inicio e final),                                    
+             remover elemento,                                    
+             buscar elemento,                                     
+             mostrar elementos,                                   
+             atualizar elementos,                                 
+             excluir lista.
+			 Funções extras:
+		   	 menuTorneio,
+			 menuGerenciar,
+			 menuOpcoes,
+			 limparBuffer,
+			 carregarDados,
+			 salvarDados,
+			 tamanhoLista                                          
+Autor: José Guilherme Felix da Silva Barreto                    
+Ultima alteracao: 21/11/2024                                    
+ *******************************************************************/
 
 /*Include das bibliotecas*/ 
 #include <stdio.h>
@@ -39,36 +47,108 @@ struct listaNo{
     ListaNo *ant;
 };
 
-//int atualizarElemento(Lista *lista,char nomeBusca[50],char nome[50],int idade,char sexo,int rating,double pontuacao);
-//ListaNo* buscarElemento(Lista *lista, char nomeBusca[50]);
-//int carregarArquivos(Lista *lista);
+int atualizarElemento(Lista *lista,char nomeBusca[50],char nome[50],int idade,char sexo,int rating,double pontuacao);
+ListaNo* buscarElemento(Lista *lista, char nomeBusca[50]);
+int carregarArquivos(Lista *lista);
 Lista* criarLista();
 Lista* excluirLista(Lista *lista);
 void imprimirLista(Lista *lista);
 int inserirElemento(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao);
-// int inserirElementoID(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao,int posicao);
-// int inserirElementoInicio(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao);
+int inserirElementoID(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao,int posicao);
+int inserirElementoInicio(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao);
 // void limparBuffer();
 // void menuGerenciar(Lista *lista);
 // void menuOpcoes(Lista *lista);
 // void menuTorneio(Lista *lista);
 int removerElemento(Lista *lista, char nomeBusca[50]);
-// int salvarArquivo(Lista *lista); 
-// int tamanhoLista(Lista *lista);
-// 
+int salvarArquivo(Lista *lista); 
+int tamanhoLista(Lista *lista);
+ 
 int main(){
+	ListaNo *competidorEncontrado;
 	setlocale(LC_ALL,"portuguese");
-	
 	Lista *lista = NULL;
 	lista = criarLista();
 	inserirElemento(lista,"Magnus",23,'M',2300,0);
 	inserirElemento(lista,"Julia",23,'F',2300,0);
-	removerElemento(lista, "Julia");
+	//removerElemento(lista, "Julia");
 	//lista = excluirLista(lista);
+	buscarElemento(lista, "Magnus");
+	atualizarElemento(lista,"Julia", "Maria",19,'F',2300,0);
 	imprimirLista(lista);
 	
-	
 	return 0;
+}
+
+int atualizarElemento(Lista *lista,char nomeBusca[50],char nome[50],int idade,char sexo,int rating,double pontuacao){
+	if(lista == NULL){
+		printf("A lista não foi criada\n");
+		return 0;
+	}
+	if(lista->prim == NULL){
+		printf("A lista está vazia\n");
+		return 0;
+	}
+	ListaNo *p;
+	for(p = lista->prim; p != NULL; p = p->prox){
+		if(strcmp(p->nome,nomeBusca)==0){
+			strcpy (p->nome, nome);
+			p->idade = idade;
+			p->sexo = sexo;
+			p->rating = rating;
+			p->pontuacao = pontuacao;
+			return 1;
+		}
+	}
+	return 0;
+}
+ListaNo* buscarElemento(Lista *lista, char nomeBusca[50]){
+	if(lista == NULL){
+        printf("A lista nao foi criada\n");
+        return NULL;
+    }
+    
+    if(lista->prim == NULL){
+		printf("A lista esta vazia\n");
+		return NULL;
+    }
+    ListaNo *p;
+    for(p = lista->prim; p != NULL; p = p->prox){
+        /*Verificando se o elemento atual e igual ao valor buscado*/
+        if(strcmp(p->nome,nomeBusca) ==0){
+            return p;
+        }
+    }
+    return NULL;
+}
+int carregarArquivos(Lista *lista){
+	int i,qtdCadastrados; //variaveis temporarias, para que em cada interacao do for, os nomes lidos sejam salvos nelas e mandandos
+	//como parametros para a funcao inserirElemento
+	char nome [50], sexo;
+	int idade, rating;
+	double pontuacao;
+	FILE *arquivo = fopen("Lista Competidores (Duplamente encadeada).txt", "r");
+	if(arquivo == NULL){
+        printf("Erro ao abrir, o arquivo não existe!\n");
+        return 0; //finaliza o programa, pois nao encontrou o arquivo
+    }
+    if(lista==NULL){
+		printf("A lista não existe\n");
+		fclose(arquivo);
+		return 0;
+	}
+	fscanf(arquivo,"%d\n",&qtdCadastrados); //le a quantidade de participantes cadastrados no txt
+	for(i=0;i<qtdCadastrados;++i){
+		fscanf(arquivo, " %49[^\n]",nome);
+		fscanf(arquivo,"%d\n",&idade);
+		fscanf(arquivo," %c\n",&sexo);
+		fscanf(arquivo,"%d\n",&rating);
+		fscanf(arquivo,"%lf\n",&pontuacao);
+		inserirElemento(lista,nome,idade,sexo,rating,pontuacao); //insere os elementos lidos na lista atual
+	}
+	fclose(arquivo);
+	
+	return 1;
 }
 
 Lista *criarLista(){
@@ -149,6 +229,8 @@ int inserirElemento(Lista *lista,char nome[50],int idade,char sexo,int rating,do
     return 1;
 }
 
+
+
 int removerElemento(Lista *lista, char nomeBusca[50]){
 	ListaNo *p, *aux;
 	if(lista == NULL){
@@ -189,4 +271,57 @@ int removerElemento(Lista *lista, char nomeBusca[50]){
         return 1;
     }
     return 0;
+}
+
+int salvarArquivo(Lista *lista){
+	if(lista ==NULL){
+		printf("A lista não foi criada\n");
+		return 0;
+	}
+	if(lista->prim ==NULL){
+		printf("A lista está vazia\n");
+		return 0;
+	}
+	int qtdCadastrados =0;
+	ListaNo *p;
+	FILE *arquivo = fopen("Lista Competidores (Duplamente encadeada).txt", "w");
+	if(arquivo == NULL){
+        printf("Erro ao abrir o arquivo!\n");
+        return 0; //finaliza o programa, pois nao encontrou o arquivo
+    }
+    
+    for(p = lista->prim; p != NULL; p = p->prox){
+		qtdCadastrados++;
+	}
+	fprintf(arquivo,"%d\n",qtdCadastrados);
+    for(p = lista->prim; p != NULL; p = p->prox){
+    	fprintf(arquivo, "%s\n",p->nome);
+		fprintf(arquivo,"%d\n",p->idade);
+		fprintf(arquivo,"%c\n",p->sexo);
+		fprintf(arquivo,"%d\n",p->rating);
+		fprintf(arquivo,"%.1lf\n",p->pontuacao);
+	}
+    
+	
+	fclose(arquivo);
+    
+    return 1;
+}
+
+int tamanhoLista(Lista *lista){
+	if(lista ==NULL){
+		printf("A lista não foi criada\n");
+		return 0;
+	}
+	if(lista->prim ==NULL){
+		printf("A lista está vazia\n");
+		return 0;
+	}
+	int qtdCadastrados =0;
+	ListaNo *p;
+    
+    for(p = lista->prim; p != NULL; p = p->prox){
+		qtdCadastrados++;
+	}
+	return qtdCadastrados;
 }

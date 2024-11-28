@@ -20,14 +20,11 @@ Descricao: Sistema para o gerenciamento de um campeonato de xadrez
 Autor: José Guilherme Felix da Silva Barreto                    
 Ultima alteracao: 21/11/2024                                    
  *******************************************************************/
-//FALTA SÓ OS MENUS, OS TRATAMENTOS E INSERIR ID E INICIO
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h> //biblioteca para a função setlocale
 #include <string.h> // biblioteca para a função "strcpy"
 #include <conio.h> // biblioteca para a função "getch()"
-
-#define TAM 8
 
 typedef struct lista Lista;
 typedef struct listaNo ListaNo;
@@ -48,23 +45,20 @@ struct listaNo{
 //PROTÓTIPOS DAS FUNÇÕES
 int atualizarElemento(Lista *lista,char nomeBusca[50],char nome[50],int idade,char sexo,int rating,double pontuacao);
 ListaNo* buscarElemento(Lista *lista, char nomeBusca[50]);
+int carregarArquivos(Lista *lista);
 Lista* criarLista();
 Lista* excluirLista(Lista *lista);
 void imprimirLista(Lista *lista);
 int inserirElemento(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao);
-int removerElemento(Lista *lista, char nomeBusca[50]);
-
-
-
-int carregarArquivos(Lista *lista);
 int inserirElementoID(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao,int posicao);
 int inserirElementoInicio(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao);
 void limparBuffer();
-void menuTorneio(Lista *lista);
 void menuGerenciar(Lista *lista);
 void menuOpcoes(Lista *lista);
-int tamanhoLista(Lista *lista);
+void menuTorneio(Lista *lista);
+int removerElemento(Lista *lista, char nomeBusca[50]);
 int salvarArquivo(Lista *lista); 
+int tamanhoLista(Lista *lista);
 
 
 
