@@ -347,6 +347,7 @@ int inserirElementoID(Lista* lista, char nome[50],int idade, char sexo,int ratin
 	}
 	quantidade++;
 	if(posicao == quantidade){
+		nova->prox = NULL;
 		p->prox = nova;
 		return 1;
 	}

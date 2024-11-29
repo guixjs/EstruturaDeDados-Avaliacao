@@ -53,29 +53,28 @@ int carregarArquivos(Lista *lista);
 Lista* criarLista();
 Lista* excluirLista(Lista *lista);
 void imprimirLista(Lista *lista);
+void imprimirOrdemInversa(Lista *lista);
 int inserirElemento(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao);
 int inserirElementoID(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao,int posicao);
 int inserirElementoInicio(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao);
-// void limparBuffer();
-// void menuGerenciar(Lista *lista);
-// void menuOpcoes(Lista *lista);
-// void menuTorneio(Lista *lista);
+void limparBuffer();
+//void menuGerenciar(Lista *lista);
+//void menuOpcoes(Lista *lista);
+//void menuTorneio(Lista *lista);
 int removerElemento(Lista *lista, char nomeBusca[50]);
 int salvarArquivo(Lista *lista); 
 int tamanhoLista(Lista *lista);
- 
+
 int main(){
 	ListaNo *competidorEncontrado;
 	setlocale(LC_ALL,"portuguese");
 	Lista *lista = NULL;
 	lista = criarLista();
 	inserirElemento(lista,"Magnus",23,'M',2300,0);
-	inserirElemento(lista,"Julia",23,'F',2300,0);
-	//removerElemento(lista, "Julia");
-	//lista = excluirLista(lista);
-	buscarElemento(lista, "Magnus");
-	atualizarElemento(lista,"Julia", "Maria",19,'F',2300,0);
+	inserirElementoID(lista,"Supi",25,'M',3400,0,2);
+	inserirElementoInicio(lista,"Nakamura",25,'M',3400,0);
 	imprimirLista(lista);
+	imprimirOrdemInversa(lista);
 	
 	return 0;
 }
@@ -200,6 +199,28 @@ void imprimirLista(Lista *lista){
 	printf("\n");
 	
 }
+
+void imprimirOrdemInversa(Lista *lista){
+	ListaNo *p;
+	if(lista == NULL){
+		printf("A lista não foi criada\n");
+		return;
+	}
+	if(lista->prim == NULL){
+		printf("A lista está vazia\n");
+		return;
+	}
+	for(p = lista->ult; p != NULL; p = p->ant){
+		printf("NOME: %s\n",p->nome);
+		printf("IDADE: %d\n",p->idade);
+		printf("SEXO: %c\n",p->sexo);
+		printf("RATING: %d\n",p->rating);
+		printf("PONTUAÇÃO: %.1lf\n",p->pontuacao);
+		printf("=====================\n");
+	}
+	printf("\n");
+	
+}
 int inserirElemento(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao){
 	if(lista == NULL){
 		printf("A lista não foi criada\n");
@@ -227,6 +248,93 @@ int inserirElemento(Lista *lista,char nome[50],int idade,char sexo,int rating,do
 	lista->ult->prox = nova;
 	lista->ult = nova;
     return 1;
+}
+int inserirElementoID(Lista* lista, char nome[50],int idade,char sexo, int rating, double pontuacao, int posicao){
+	if(lista == NULL){
+		printf("A lista não foi criada\n");
+		return 0;
+	}
+	if(posicao<=0){
+		printf("Posição fora do intervalo permitido\n");
+		return 0;
+	}
+	
+	ListaNo *nova = (ListaNo*)malloc(sizeof(ListaNo));
+	if(nova == NULL){
+		printf("Sem espaço\n");
+		return 0;
+	}
+	
+	strcpy (nova->nome, nome);
+	nova->idade = idade;
+	nova->sexo = sexo;
+	nova->rating = rating;
+	nova->pontuacao = pontuacao;
+	
+	if(posicao ==1 || lista->prim ==NULL){
+		nova->prox = lista->prim;
+		nova->ant = NULL;
+		lista->prim->ant = nova;
+		lista->prim = nova;
+		return 1;
+	}
+	
+	int quantidadeCadastrados = 1;
+	ListaNo *p;
+	p = lista->prim;
+	while(p->prox !=NULL){
+		quantidadeCadastrados++;
+		if(posicao ==quantidadeCadastrados){
+			nova->ant = p;
+			nova->prox = p->prox;
+			p->prox->ant = nova;
+			p->prox = nova;
+			return 1;
+		}
+		p = p->prox;
+	}
+	quantidadeCadastrados++;
+	if(posicao == quantidadeCadastrados){
+		nova->ant = lista->ult;
+		lista->ult->prox = nova;
+		lista->ult = nova;
+		return 1;
+	}
+	if(posicao>quantidadeCadastrados){
+		printf("Posição fora do intervalo permitido\n");
+		return 0;
+	}
+	return 0;
+}
+
+int inserirElementoInicio(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao){
+	if(lista == NULL){
+		printf("A lista não foi criada\n");
+		return 0;
+	}
+	ListaNo *nova = (ListaNo*)malloc(sizeof(ListaNo));
+	if(nova == NULL){
+		printf("Sem espaço\n");
+		return 0;
+	}
+	strcpy (nova->nome, nome);
+	nova->idade = idade;
+	nova->sexo = sexo;
+	nova->rating = rating;
+	nova->pontuacao = pontuacao;
+	nova->prox = lista->prim;
+	nova->ant = NULL;
+	lista->prim->ant = nova;
+	
+	lista->prim = nova;
+	return 1;
+}
+
+void limparBuffer(){
+	char c = 'a';
+	do{
+		c = getchar();
+	}while(c!='\n');
 }
 
 
