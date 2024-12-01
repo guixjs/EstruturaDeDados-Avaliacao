@@ -1,31 +1,51 @@
-6
-Fernando
-42
+10
+Magnus Carlsen
+34
 M
-2300
+2871
 0,0
-Magnus
-32
+Luis Paulo Supi
+27
 M
-2399
+2658
 0,0
-Magnus
-32
+Alexandr Fier
+35
 M
-2399
+2638
 0,0
-Magnus
-32
-M
-2399
+Julia Alboredo
+26
+F
+2362
 0,0
-Magnus
-32
+Krikor Mekhitarian
+37
 M
-2399
+2512
 0,0
-Magnus
-32
+Kathie Librelato
+22
+F
+2180
+0,0
+Guilherme Felix
+18
 M
-2399
+1000
+0,0
+Luiz Carlos
+40
+M
+1000
+0,0
+Elefante38
+38
+M
+3000
+0,0
+Karpov
+67
+M
+3050
 0,0
