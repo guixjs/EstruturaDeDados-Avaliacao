@@ -547,6 +547,9 @@ void menuOpcoes(Lista *lista){
 			if(verificar==1){
 				printf("LISTA SALVA COM SUCESSO\n");
 				getch();
+			}else{
+				printf("NÃO FOI POSSÍVEL SALVAR A LISTA\n");
+				getch();
 			}
 			break;
 		case 2:

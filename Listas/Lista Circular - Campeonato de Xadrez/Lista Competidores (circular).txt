@@ -1,0 +1,47 @@
+9
+Magnus Carlsen
+34
+M
+2871
+0,0
+Luis Paulo Supi
+27
+M
+2658
+0,0
+Alexandr Fier
+35
+M
+2638
+0,0
+Julia Alboredo
+26
+F
+2362
+0,0
+Krikor Mekhitarian
+37
+M
+2512
+0,0
+Kathie Librelato
+22
+F
+2180
+0,0
+Guilherme Felix
+18
+M
+1000
+0,0
+Luiz Carlos
+40
+M
+1000
+0,0
+Anatolij Karpov
+73
+M
+2780
+0,0
+

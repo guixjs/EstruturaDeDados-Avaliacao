@@ -1,5 +1,5 @@
 /******************************************************************* 
-Nome: Campeonato de Xadrez - Lista Encadeada                                      
+Nome: Campeonato de Xadrez - Lista Circular                                 
 Descricao: Sistema para o gerenciamento de um campeonato de xadrez
              Esse codigo possui as principais operacoes da lista, como:                                         
              criar lista,                                       
@@ -20,12 +20,15 @@ Descricao: Sistema para o gerenciamento de um campeonato de xadrez
 Autor: José Guilherme Felix da Silva Barreto                    
 Ultima alteracao: 21/11/2024                                    
  *******************************************************************/
+ 
+ /*Include das bibliotecas*/ 
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h> //biblioteca para a função setlocale
 #include <string.h> // biblioteca para a função "strcpy"
 #include <conio.h> // biblioteca para a função "getch()"
 
+/*Definicao da estrutura Lista e do elemento da lista*/ 
 typedef struct lista Lista;
 typedef struct listaNo ListaNo;
 
@@ -42,7 +45,7 @@ struct listaNo{
     ListaNo *prox;
 };
 
-//PROTÓTIPOS DAS FUNÇÕES
+
 int atualizarElemento(Lista *lista,char nomeBusca[50],char nome[50],int idade,char sexo,int rating,double pontuacao);
 ListaNo* buscarElemento(Lista *lista, char nomeBusca[50]);
 int carregarArquivos(Lista *lista);
@@ -60,10 +63,7 @@ int removerElemento(Lista *lista, char nomeBusca[50]);
 int salvarArquivo(Lista *lista); 
 int tamanhoLista(Lista *lista);
 
-
-
-int main()
-{
+int main(){
 	char resposta;
 	int escolha;
 
@@ -130,9 +130,15 @@ int main()
 	
 	return 0;
 }
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
+
+**************************************************/
 int atualizarElemento(Lista *lista,char nomeBusca[50],char nome[50],int idade,char sexo,int rating,double pontuacao){
-	ListaNo *p;
-	if(lista==NULL){
+	if(lista== NULL){
 		printf("A lista não foi criada\n");
 		return 0;
 	}
@@ -140,7 +146,10 @@ int atualizarElemento(Lista *lista,char nomeBusca[50],char nome[50],int idade,ch
 		printf("A lista está vazia\n");
 		return 0;
 	}
-	for(p = lista->prim; p != NULL; p = p->prox){
+	
+	ListaNo *p;
+	p = lista->prim;
+	do{
 		if(strcmp(p->nome,nomeBusca)==0){
 			strcpy (p->nome, nome);
 			p->idade = idade;
@@ -149,39 +158,52 @@ int atualizarElemento(Lista *lista,char nomeBusca[50],char nome[50],int idade,ch
 			p->pontuacao = pontuacao;
 			return 1;
 		}
-	}
-	
-	return 0;
+		p = p->prox;
+	}while(p!= lista->prim);
+    return 0;
 }
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
 
+**************************************************/
 ListaNo* buscarElemento(Lista *lista, char nomeBusca[50]){
-	ListaNo *p;
 	if(lista == NULL){
-        printf("A lista nao foi criada\n");
-        return NULL;
-    }
-
-    /*Verificando se a lista possui elementos*/
-    if(lista->prim == NULL){
-        printf("A lista esta vazia\n");
-        return NULL;
-    }
-    for(p = lista->prim; p != NULL; p = p->prox){
-        /*Verificando se o elemento atual e igual ao valor buscado*/
-        if(strcmp(p->nome,nomeBusca) ==0){
-            return p;
-        }
-    }
+		printf("A lista não existe\n");
+		return NULL;
+	}
+	if(lista->prim == NULL){
+		printf("A lista está vazia\n");
+		return NULL;
+	}
+	ListaNo* p;
 	
+	p = lista->prim;
+	do{
+		if(strcmp(p->nome, nomeBusca)==0){
+			return p;
+		}
+		p = p->prox;
+	}while(p != lista->prim);
 	return NULL;
+	
 }
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
+
+**************************************************/
 int carregarArquivos(Lista *lista){
 	int i,qtdCadastrados; //variaveis temporarias, para contar quantas vezes precisa passar pelo for
 	//(lidas no arquivo)
 	char nome [50], sexo;
 	int idade, rating;
 	double pontuacao;
-	FILE *arquivo = fopen("Lista Competidores (encadeada).txt", "r");
+	FILE *arquivo = fopen("Lista Competidores (circular).txt", "r");
 	if(arquivo == NULL){
         printf("Erro ao abrir, o arquivo não existe!\n");
         return 0; //finaliza o programa, pois nao encontrou o arquivo
@@ -192,7 +214,7 @@ int carregarArquivos(Lista *lista){
 		return 0;
 	}
 	fscanf(arquivo,"%d\n",&qtdCadastrados); //le a quantidade de participantes cadastrados no txt
-	for( i = 0; i < qtdCadastrados; ++i){
+	for(i= 0; i <qtdCadastrados; ++i){
 		fscanf(arquivo, " %49[^\n]",nome);
 		fscanf(arquivo,"%d\n",&idade);
 		fscanf(arquivo," %c\n",&sexo);
@@ -205,7 +227,6 @@ int carregarArquivos(Lista *lista){
 	return 1;
 }
 /*************************************************
-	OPÇÃO NO MENU:
 	NOME:
 	PARÂMETROS:
 	RETORNO:
@@ -213,101 +234,91 @@ int carregarArquivos(Lista *lista){
 
 **************************************************/
 Lista* criarLista(){
-    /*solicitando espaco para a lista*/
-    Lista *nova = (Lista*)malloc(sizeof(Lista));
-    
-    /*Verificando se o espaco foi resevado*/
-    if(nova == NULL){
-        printf("Sem espaco\n");
-        return NULL;
-    }
-    /*Preparando os dados iniciais da lista*/
-    nova->prim = NULL;
-
-    /*Retonando o espaco reservado*/
-    return nova;
-}
-
-Lista* excluirLista(Lista *lista){
-	ListaNo *aux;
-	if(lista == NULL){
-        printf("A lista nao foi criada\n");
-        return NULL;
-    }
-    while(lista->prim != NULL){
-		aux = lista->prim;
-        lista->prim = lista->prim->prox;
-        free(aux);
-	}
-	free(lista);
+	Lista *nova = (Lista*)malloc(sizeof(Lista));
 	
+	if(nova==NULL){
+		printf("Não foi possível criar a lista\n");
+		return NULL;
+	}
+	nova->prim = NULL;
+	return nova;
+}
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
+
+**************************************************/
+
+Lista* excluirLista(Lista* lista){
+	if(lista == NULL){
+		printf("A lista não existe\n");
+		return NULL;
+	}
+	ListaNo *p, *aux, *primeiroOriginal;
+	if(lista->prim == NULL){
+		free(lista); 
+		return NULL;
+	}
+	
+	primeiroOriginal = lista->prim; // guarda o lista prim para usar no while
+	p = lista->prim; //p recebe o primeiro elemento
+	do{
+		aux = p->prox; // aux recebe o proximo elemento a partir do primeiro
+		free(p); // libera o primeiro
+		p = aux; // p recebe o prox, se tornando o primeiro elemento 
+	}while(p != primeiroOriginal); // enquanto o primeiro for diferente de lista prim
+	
+	free(lista);
 	return NULL;
 }
+
+
 /*************************************************
-	OPÇÃO NO MENU:
 	NOME:
 	PARÂMETROS:
 	RETORNO:
 	DESCRIÇÃO:
 
 **************************************************/
-void imprimirLista(Lista *lista){
-	ListaNo *p;
-	
-	if(lista ==NULL){
-		printf("A lista nao existe\n");
-		return;
-	}
-	if(lista->prim==NULL){
-		printf("A lista esta vazia\n");
-		return;
-	}
-	
-	for(p = lista->prim; p != NULL; p = p->prox){
-		printf("NOME: %s\n",p->nome);
-		printf("IDADE: %d\n",p->idade);
-		printf("SEXO: %c\n",p->sexo);
-		printf("RATING: %d\n",p->rating);
-		printf("PONTUAÇÃO: %.1lf\n",p->pontuacao);
-		printf("=====================\n");
-	}
-	printf("\n");
-}
-/*************************************************
-	OPÇÃO NO MENU:
-	NOME:
-	PARÂMETROS:
-	RETORNO:
-	DESCRIÇÃO:
 
-**************************************************/
 int inserirElemento(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao){
-	ListaNo *p;
-	
-	ListaNo *nova = (ListaNo*)malloc(sizeof(ListaNo));
-	if(nova==NULL){
+	ListaNo* nova = (ListaNo*)malloc(sizeof(ListaNo));
+	ListaNo* p;
+	if(nova == NULL){
 		printf("Sem espaço\n");
 		return 0;
 	}
-	strcpy (nova->nome, nome);
+	strcpy(nova->nome,nome);
 	nova->idade = idade;
 	nova->sexo = sexo;
 	nova->rating = rating;
 	nova->pontuacao = pontuacao;
-	nova->prox = NULL;
 	
-	if(lista->prim ==NULL){
+	if(lista->prim == NULL){
 		lista->prim = nova;
+		nova->prox = nova;
 		return 1;
 	}
-	for(p = lista->prim; p->prox != NULL; p = p->prox);
+	
+	for(p = lista->prim; p->prox != lista->prim; p=p->prox);
 	
 	p->prox = nova;
+	nova->prox = lista->prim;
 	return 1;
 }
-int inserirElementoID(Lista* lista, char nome[50],int idade, char sexo,int rating,double pontuacao, int posicao){
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
+
+**************************************************/
+
+int inserirElementoID(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao,int posicao){
 	if(lista == NULL){
-		printf("A lista não foi criada\n");
+		printf("A lista não existe\n");
 		return 0;
 	}
 	if(posicao<=0){
@@ -316,27 +327,26 @@ int inserirElementoID(Lista* lista, char nome[50],int idade, char sexo,int ratin
 	}
 	
 	ListaNo *nova = (ListaNo*)malloc(sizeof(ListaNo));
-	if(nova==NULL){
+	
+	if(nova == NULL){
 		printf("Sem espaço\n");
 		return 0;
 	}
-	strcpy (nova->nome, nome);
+	
+	strcpy(nova->nome, nome);
 	nova->idade = idade;
 	nova->sexo = sexo;
 	nova->rating = rating;
 	nova->pontuacao = pontuacao;
 	
-	
-	if(posicao ==1 || lista->prim ==NULL){
-		nova->prox = lista->prim;
-		lista->prim = nova;
+	if(posicao == 1|| lista->prim == NULL){
+		inserirElementoInicio(lista,nova->nome,nova->idade,nova->sexo,nova->rating,nova->pontuacao);
 		return 1;
 	}
-	
 	int quantidade =1;
 	ListaNo *p =lista->prim;
 	
-	while(p->prox!= NULL){
+	while(p->prox!= lista->prim){
 		quantidade++;
 		if(posicao == quantidade){
 			nova->prox = p->prox;
@@ -347,8 +357,7 @@ int inserirElementoID(Lista* lista, char nome[50],int idade, char sexo,int ratin
 	}
 	quantidade++;
 	if(posicao == quantidade){
-		nova->prox = NULL;
-		p->prox = nova;
+		inserirElemento(lista,nova->nome,nova->idade,nova->sexo,nova->rating,nova->pontuacao);
 		return 1;
 	}
 	if(posicao>quantidade){
@@ -359,28 +368,48 @@ int inserirElementoID(Lista* lista, char nome[50],int idade, char sexo,int ratin
 	return 0;
 }
 
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
+
+**************************************************/
 int inserirElementoInicio(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao){
-	if(lista ==NULL){
-		printf("A lista não foi criada\n");
-		return 0;
-	}
-	ListaNo *nova = (ListaNo*)malloc(sizeof(ListaNo));
+	ListaNo* nova = (ListaNo*)malloc(sizeof(ListaNo));
+	ListaNo *p = lista->prim;
 	if(nova == NULL){
 		printf("Sem espaço\n");
 		return 0;
 	}
-	strcpy (nova->nome, nome);
+	strcpy(nova->nome,nome);
 	nova->idade = idade;
 	nova->sexo = sexo;
 	nova->rating = rating;
 	nova->pontuacao = pontuacao;
-	nova->prox = lista->prim;
+ 
+    if(lista->prim ==NULL){
+		lista->prim = nova;
+		nova->prox = lista->prim;
+		return 1;
+	}
+	while(p->prox !=lista->prim){
+		p = p->prox;
+	}
 	
+	nova->prox = lista->prim;
 	lista->prim = nova;
+	p->prox = lista->prim;
 	return 1;
+	
 }
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
 
-
+**************************************************/
 void limparBuffer(){
 	char c = 'a';
 	do{
@@ -388,6 +417,13 @@ void limparBuffer(){
 	}while(c!='\n');
 }
 
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
+
+**************************************************/
 
 void menuGerenciar(Lista *lista){
 	int escolhaGerenciar,verificar;
@@ -687,79 +723,119 @@ void menuTorneio(Lista *lista){
 		}
 	}while(escolhaTorneio!=0);
 }
-int removerElemento(Lista *lista, char nomeBusca[50]){
-    ListaNo *p, *aux;
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
 
-    /*Verificando se a lista foi criada*/
-    if(lista == NULL){
-        printf("A lista nao foi criada\n");
-        return 0;
-    }
-
-    /*Verificando se a lista foi criada*/
-    if(lista->prim == NULL){
-        printf("A lista esta vazia\n");
-        return 0;
-    }
-
-    /*Removendo o elemento caso ele esteja na primeira posicao da lista*/
-    if(strcmp(lista->prim->nome, nomeBusca) == 0){
-        p = lista->prim;
-        lista->prim = lista->prim->prox;
-        free(p);
-        return 1;
-    }
-
-    /*Passando por todos os elementos em busca do elemento que sera removido*/
-    for(p = lista->prim; p->prox->prox != NULL; p = p->prox){
-        /*Verificando se e o elemento que sera removido da lista*/
-		if(strcmp(p->prox->nome, nomeBusca) == 0){
-            aux = p->prox;
-            p->prox = p->prox->prox;
-            free(aux);
-            return 1;
-        }
-    }
-
-    /*Tratamento da exclusao quando o elemento se encontra na ultima posicao da lista*/
-    if(strcmp(p->prox->nome, nomeBusca) ==0){
-        aux = p->prox;
-        p->prox = NULL;
-        free(aux);
-        return 1;
-    }
-    
-    return 0;
+**************************************************/
+void imprimirLista(Lista *lista){
+	if(lista == NULL){
+		printf("A lista não existe\n");
+		return;
+	}
+	if(lista->prim == NULL){
+		printf("A lista está vazia\n");
+		return;
+	}
+	ListaNo* p;
+	
+	p = lista->prim;
+	do{
+    	printf("NOME: %s\n",p->nome);
+		printf("IDADE: %d\n",p->idade);
+		printf("SEXO: %c\n",p->sexo);
+		printf("RATING: %d\n",p->rating);
+		printf("PONTUAÇÃO: %.1lf\n",p->pontuacao);
+		printf("=====================\n");
+		p=p->prox;
+	}while(p!=lista->prim);
+	
+    return;
 }
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
 
-
-int salvarArquivo(Lista *lista){
-	if(lista ==NULL){
+**************************************************/
+int removerElemento(Lista *lista, char nomeBusca[50]){
+	if(lista == NULL){
 		printf("A lista não foi criada\n");
 		return 0;
 	}
-	if(lista->prim ==NULL){
+	if(lista->prim == NULL){
 		printf("A lista está vazia\n");
 		return 0;
 	}
-	int qtdCadastrados =0;
+	ListaNo* p, *aux;
+	
+	if(strcmp(lista->prim->nome, nomeBusca)==0){
+		aux = lista->prim;
+		for(p = lista->prim; p->prox != lista->prim; p = p->prox);
+		p->prox = lista->prim->prox;
+		lista->prim = lista->prim->prox;
+		free(aux);
+		return 1;
+	}
+	for(p = lista->prim; p->prox != lista->prim; p = p->prox){
+		if(strcmp(p->prox->nome, nomeBusca)==0){
+			aux = p->prox;
+            p->prox = p->prox->prox;
+            free(aux);
+            return 1;
+		}
+	}
+	 if(strcmp(p->prox->nome, nomeBusca)==0){
+        aux = p->prox;
+        p->prox = lista->prim;
+        free(aux);
+        return 1;
+    }
+    return 0;
+}
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
+
+**************************************************/
+int salvarArquivo(Lista *lista){
+	if(lista == NULL){
+		printf("A lista não foi criada\n");
+		return 0;
+	}
+	if(lista->prim == NULL){
+		printf("A lista está vazia\n");
+		return 0;
+	}
+	
+	int qtdCadastrados =1;
+	int i = 1;
 	ListaNo *p;
-	FILE *arquivo = fopen("Lista Competidores (encadeada).txt", "w");
+	FILE *arquivo = fopen("Lista Competidores (circular).txt", "w");
 	if(arquivo == NULL){
         printf("Erro ao abrir o arquivo!\n");
         return 0; //finaliza o programa, pois nao encontrou o arquivo
     }
+    p = lista->prim;
     
-    for(p = lista->prim; p != NULL; p = p->prox){
+    while(p->prox !=lista->prim){
 		qtdCadastrados++;
+		p = p->prox;
 	}
+	
 	fprintf(arquivo,"%d\n",qtdCadastrados);
-    for(p = lista->prim; p != NULL; p = p->prox){
+    for(p = lista->prim; i <=qtdCadastrados; p = p->prox){
     	fprintf(arquivo, "%s\n",p->nome);
 		fprintf(arquivo,"%d\n",p->idade);
 		fprintf(arquivo,"%c\n",p->sexo);
 		fprintf(arquivo,"%d\n",p->rating);
 		fprintf(arquivo,"%.1lf\n",p->pontuacao);
+		i++;
 	}
     
 	
@@ -768,19 +844,26 @@ int salvarArquivo(Lista *lista){
     return 1;
 }
 
+/*************************************************
+	NOME:
+	PARÂMETROS:
+	RETORNO:
+	DESCRIÇÃO:
+
+**************************************************/
 int tamanhoLista(Lista *lista){
-	if(lista ==NULL){
-		printf("A lista não foi criada\n");
+	if(lista == NULL){
+		printf("A lista não existe\n");
 		return 0;
 	}
-	if(lista->prim ==NULL){
+	if(lista->prim == NULL){
 		printf("A lista está vazia\n");
 		return 0;
 	}
-	int qtdCadastrados =0;
+	int qtdCadastrados =1;
 	ListaNo *p;
     
-    for(p = lista->prim; p != NULL; p = p->prox){
+    for(p = lista->prim; p->prox != lista->prim; p = p->prox){
 		qtdCadastrados++;
 	}
 	return qtdCadastrados;
