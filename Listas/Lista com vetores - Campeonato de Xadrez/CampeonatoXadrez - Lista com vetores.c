@@ -1,5 +1,5 @@
 /******************************************************************* 
-Nome: Campeonato de Xadrez                                       
+Nome: Campeonato de Xadrez - Lista com vetores                                   
 Descricao: Sistema para o gerenciamento de um campeonato de xadrez
              Esse codigo possui as principais operacoes da        
              lista, como:                                         
@@ -18,7 +18,8 @@ Descricao: Sistema para o gerenciamento de um campeonato de xadrez
 			 carregarDados,
 			 salvarDados,
 			 tamanhoLista                                          
-Autor: José Guilherme Felix da Silva Barreto                    
+Autor: José Guilherme Felix da Silva Barreto
+Professor: Mayrton Dias                             
 Ultima alteracao: 28/10/2024                                    
  *******************************************************************/
 
@@ -201,12 +202,8 @@ int carregarArquivos(Lista *lista){
 	int idade, rating;
 	double pontuacao;
 	FILE *arquivo = fopen("Lista Competidores.txt", "r");
-	if(arquivo == NULL){
-        printf("Erro ao abrir, o arquivo não existe!\n");
-        return 0; //finaliza o programa, pois nao encontrou o arquivo
-    }
-    if(lista==NULL){
-		printf("A lista não existe\n");
+    if(arquivo == NULL){
+		printf("Erro ao abrir o arquuivo\n");
 		fclose(arquivo);
 		return 0;
 	}
@@ -421,34 +418,7 @@ void limparBuffer(){
 		c = getchar();
 	}while(c!='\n');
 }
-/*************************************************
-	NOME: removerElemento
-	PARÂMETROS: lista, char nomeBusca [50]
-	RETORNO: 1 se conseguir remover e 0 se não conseguir
-	DESCRIÇÃO: remove um elemento que foi buscado pelo nome
 
-**************************************************/
-int removerElemento(Lista *lista, char nomeBusca[50]){
-	int i,j;
-	if(lista == NULL){
-		printf("A LISTA NÃO EXISTE\n");
-		return 0;
-	}
-	for(i=0;i<lista->id;++i){
-		if(strcmp(lista->elementos[i].nome, nomeBusca) == 0){
-			for(j=i; j<lista->id-1;++j){
-				strcpy(lista->elementos[j].nome, lista->elementos[j+1].nome);
-				lista->elementos[j].idade = lista->elementos[j+1].idade;
-				lista->elementos[j].sexo = lista->elementos[j+1].sexo;
-				lista->elementos[j].rating = lista->elementos[j+1].rating;
-				lista->elementos[j].pontuacao = lista->elementos[j+1].pontuacao;
-			}
-			--(lista->id);
-            return 1;
-		}
-	}
-	return 0;
-}
 /*************************************************
 	NOME: menuGerenciar
 	PARÂMETROS: lista
@@ -773,6 +743,35 @@ int tamanhoLista(Lista *lista){
 	}
 	tamanho = lista->id;	
 	return tamanho;
+}
+
+/*************************************************
+	NOME: removerElemento
+	PARÂMETROS: lista, char nomeBusca [50]
+	RETORNO: 1 se conseguir remover e 0 se não conseguir
+	DESCRIÇÃO: remove um elemento que foi buscado pelo nome
+
+**************************************************/
+int removerElemento(Lista *lista, char nomeBusca[50]){
+	int i,j;
+	if(lista == NULL){
+		printf("A LISTA NÃO EXISTE\n");
+		return 0;
+	}
+	for(i=0;i<lista->id;++i){
+		if(strcmp(lista->elementos[i].nome, nomeBusca) == 0){
+			for(j=i; j<lista->id-1;++j){
+				strcpy(lista->elementos[j].nome, lista->elementos[j+1].nome);
+				lista->elementos[j].idade = lista->elementos[j+1].idade;
+				lista->elementos[j].sexo = lista->elementos[j+1].sexo;
+				lista->elementos[j].rating = lista->elementos[j+1].rating;
+				lista->elementos[j].pontuacao = lista->elementos[j+1].pontuacao;
+			}
+			--(lista->id);
+            return 1;
+		}
+	}
+	return 0;
 }
 /*************************************************
 	NOME: salvarArquivos

@@ -1,41 +1,54 @@
-
-
+/****************************************************************** 
+ * Nome: Lista encadeada                                          
+ * Descricao: Implementacao de lista encadeada. Esse codigo possui
+ *            as principais operacoes da lista, como:             
+ *            criar lista,                                        
+ *            inserir elemento,                                   
+ *            remover elemento,                                   
+ *            buscar elemento,                                    
+ *            mostrar elementos,                                  
+ *            atualizar elementos,                                
+ *            excluir lista.                                      
+ * Autor: Mayrton Dias                                            
+ * Ultima alteracao: 08/10/2024                                   
+ ******************************************************************/
+ 
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h> //biblioteca para a função setlocale
 #include <string.h> // biblioteca para a função "strcpy"
 #include <conio.h> // biblioteca para a função "getch()"
+ 
+typedef struct fila Fila;
+typedef struct filaNo FilaNo;
 
-#define TAM 9
-typedef struct{
-	char nome [50];
+struct fila{
+    FilaNo *inicio;
+    FilaNo* fim;
+};
+
+struct filaNo{
+    char nome [50];
 	int idade;
 	char sexo;
 	int rating;
 	double pontuacao;
-}Competidores;
-
-
-typedef struct{
-	int qtdCadastrados;
-    int inicio;
-    int fim;
-    Competidores *elementos;
-} Fila; 
-
-/*Funcoes implementadas*/
+    FilaNo *prox;
+};
 int carregarArquivo(Fila *);
 Fila* criarFila();
-int dequeue(Fila*);//desenfileirar
-int enqueue(Fila*,char [50],int ,char ,int ,double);//enfileirar
+FilaNo* dequeue(Fila* fila);
+int enqueue(Fila*,char [50],int ,char ,int ,double);
 Fila* excluirFila(Fila*);
 void limparBuffer();
 int salvarArquivo(Fila*);
+int tamanhoFila(Fila *fila);
+
 
 int main(){
-	setlocale(LC_ALL,"portuguese");
+setlocale(LC_ALL,"portuguese");
 	Fila* fila = NULL;
-	int verifica;
+	int verifica,tamanho;
 	int escolha;
 	char nomeTemp[50], sexoTemp;
 	int ratingTemp, idadeTemp;
@@ -128,16 +141,14 @@ int main(){
 		case 6:
 			system("cls");//serve para limpar a tela 
 			printf("MENU PRINCIPAL>TAMANHO DA FILA\n===========================\n");
-			if(fila == NULL){
-				printf("A fila não foi cridada\n");
+			
+			tamanho = tamanhoFila(fila);
+			if(tamanho==1){
+				printf("A fila possui %d competidor",tamanho);
+			}else if(tamanho>1){
+				printf("A fila possui %d competidores",tamanho);
 			}else{
-				if(fila->qtdCadastrados == 1){
-					printf("A fila possui %d competidor",fila->qtdCadastrados);
-				}else if(fila->qtdCadastrados>1){
-					printf("A fila possui %d competidores",fila->qtdCadastrados);
-				}else{
-					printf("A fila está vazia\n");
-				}
+				printf("A lista não possui competidores\n");
 			}
 			getch();
 			break;
@@ -163,87 +174,101 @@ int main(){
 	}while(escolha !=0);
 	printf("OBRIGADOR POR UTILIZAR O CHECKMATE ORGANIZER!\n");
 	return 0;
-}
 
+
+	return 0;
+}
 int carregarArquivo(Fila *fila){
 	if(fila == NULL){
 		printf("A fila não foi criada\n");
 		return 0;
 	}
-	int i, qtdCadastrado;
+	int i,qtdCadastrados; //variaveis temporarias, para usar no enqueue
 	char nome [50], sexo;
 	int idade, rating;
 	double pontuacao;
-	
-	FILE* arquivo = fopen("Fila competidores - (Fila com vetor).txt", "r");
-	fscanf(arquivo,"%d\n",&qtdCadastrado);
-	for(i=0;i<qtdCadastrado;++i){
+	FILE* arquivo = fopen("Fila competidores - (Fila com apontadores).txt", "r");
+	if(arquivo == NULL){
+		printf("Erro ao abrir o arquivo");
+		return 0;
+	}
+	fscanf(arquivo,"%d\n",&qtdCadastrados); //le a quantidade de participantes cadastrados no txt
+	for( i = 0; i < qtdCadastrados; ++i){
 		fscanf(arquivo, " %49[^\n]",nome);
 		fscanf(arquivo,"%d\n",&idade);
 		fscanf(arquivo," %c\n",&sexo);
 		fscanf(arquivo,"%d\n",&rating);
 		fscanf(arquivo,"%lf\n",&pontuacao);
-		enqueue(fila,nome,idade,sexo,rating,pontuacao);
+		enqueue(fila,nome,idade,sexo,rating,pontuacao); //insere os elementos lidos na lista atual
 	}
 	fclose(arquivo);
-	
 	return 1;
 }
 
 Fila* criarFila(){
-	Fila *nova = (Fila*)malloc(sizeof(Fila));
-	
+	Fila* nova = (Fila*)malloc(sizeof(Fila));
 	if(nova == NULL){
-		printf("Sem espaço\n");
-		return NULL;
-	}
-	nova->inicio = 0;
-	nova->fim = 0;
-	nova->qtdCadastrados = 0;
-	
-	nova->elementos = (Competidores*)malloc(TAM*sizeof(Competidores));
-	
-	if(nova->elementos == NULL){
-		printf("Sem espaço\n");
-		free(nova);
-		return NULL;
-	}
-	return nova;
-}
-
-int dequeue(Fila* fila){
-	if(fila == NULL){
-		printf("A fila não existe\n");
-		return 0;
-	}
-	if((fila->inicio+1)%TAM != fila->fim){
-        fila->inicio = (fila->inicio+1)%TAM;
-        fila->qtdCadastrados--;
-    }else {
-        printf("Vazia\n");
-        return 0;
+        printf("Sem espaco\n");
+        return NULL;
     }
-    return 1;
+    /*Preparando os dados iniciais da lista*/
+    nova->inicio = NULL;
+	nova->fim = NULL;
+    /*Retonando o espaco reservado*/
+    return nova;
 }
 
+FilaNo* dequeue(Fila* fila){
+    FilaNo *aux;
+
+    if(fila == NULL){
+        printf("A fila não foi criada\n");
+        return NULL;
+    }
+
+    if(fila->inicio == NULL){
+        printf("A fila está vazia\n");
+        return NULL;
+    }
+    
+    if(fila->inicio == fila->fim){
+    	aux = fila->inicio;
+		fila->inicio = NULL;
+		fila->fim = NULL;
+		return aux;
+	}
+
+    aux = fila->inicio;
+    fila->inicio = fila->inicio->prox;  
+    return aux;
+}
 int enqueue(Fila* fila,char nome[50],int idade,char sexo,int rating,double pontuacao){
 	if(fila == NULL){
-		printf("A fila não existe\n");
+		printf("A fila não foi criada\n");
 		return 0;
 	}
-	if((fila->fim+1)%TAM != fila->inicio){
-		strcpy(fila->elementos[fila->fim].nome , nome);
-		fila->elementos[fila->fim].idade = idade;
-		fila->elementos[fila->fim].sexo = sexo;
-		fila->elementos[fila->fim].rating = rating;
-		fila->elementos[fila->fim].pontuacao = pontuacao;
-		fila->fim=(fila->fim+1)%TAM;
-		fila->qtdCadastrados++;
-	}else{
+	FilaNo *nova = (FilaNo*)malloc(sizeof(FilaNo));
+	if(nova == NULL){
 		printf("Sem espaço\n");
 		return 0;
 	}
+	strcpy (nova->nome, nome);
+	nova->idade = idade;
+	nova->sexo = sexo;
+	nova->rating = rating;
+	nova->pontuacao = pontuacao;
+	nova->prox = NULL;
+	
+	if(fila->inicio == NULL){
+		fila->inicio = nova;
+		fila->fim = nova;
+		return 1;
+	}else{
+		fila->fim->prox = nova;	
+		fila->fim = fila->fim->prox;	
+	}
 	return 1;
+	
 }
 
 Fila* excluirFila(Fila* fila){
@@ -251,18 +276,16 @@ Fila* excluirFila(Fila* fila){
 		printf("A fila não existe\n");
 		return NULL;
 	}
-	free(fila->elementos);
+	FilaNo *aux;
+	while(fila->inicio != NULL){
+		aux = fila->inicio;
+		fila->inicio = fila->inicio->prox;
+		free(aux);
+	}
 	free(fila);
 	return NULL;
 }
 
-/*************************************************
-	NOME: limparBuffer
-	PARÂMETROS: void
-	RETORNO: void
-	DESCRIÇÃO: limpa o buffer do cmd e é chamado depois de todo scanf, para evitar bugs em scanf char
-
-**************************************************/
 void limparBuffer(){
 	char c = 'a';
 	do{
@@ -275,31 +298,47 @@ int salvarArquivo(Fila* fila){
 		printf("A fila não existe\n");
 		return 0;
 	}
-	if(fila->inicio == fila->fim){
+	if(fila->inicio == NULL){
 		printf("A fila está vazia\n");
 		return 0;
 	}
-	FILE* arquivo = fopen("Fila competidores - (Fila com vetor).txt", "w");
-	int i;
+	FILE* arquivo = fopen("Fila competidores - (Fila com apontadores).txt", "w");
 	if(arquivo == NULL){
 		printf("Erro ao abrir o arquivo");
 		return 0;
 	}
 	
-	fprintf(arquivo,"%d\n",fila->qtdCadastrados);
+	int qtdCadastrados = 0;
+	FilaNo* p = fila->inicio;
 	
-	for(i = 0; i<fila->qtdCadastrados;++i){
-		fprintf(arquivo, "%s\n",fila->elementos[i].nome);
-		fprintf(arquivo,"%d\n",fila->elementos[i].idade);
-		fprintf(arquivo,"%c\n",fila->elementos[i].sexo);
-		fprintf(arquivo,"%d\n",fila->elementos[i].rating);
-		fprintf(arquivo,"%.1lf\n",fila->elementos[i].pontuacao);
+	while(p != NULL){
+		qtdCadastrados++;
+		p = p->prox;
 	}
+	fprintf(arquivo,"%d\n",qtdCadastrados);
+	p = fila->inicio;
+	while(p != NULL){
+		fprintf(arquivo, "%s\n",p->nome);
+		fprintf(arquivo,"%d\n",p->idade);
+		fprintf(arquivo,"%c\n",p->sexo);
+		fprintf(arquivo,"%d\n",p->rating);
+		fprintf(arquivo,"%.1lf\n",p->pontuacao);
+		p = p->prox;
+	}	
 	fclose(arquivo);
 	return 1;
 }
 
-
-
-
-
+int tamanhoFila(Fila *fila){
+	if(fila == NULL){
+		printf("A fila não existe\n");
+		return 0;
+	}
+	int qtdCadastrados = 0;
+	FilaNo* p = fila->inicio;
+	while(p != NULL){
+		qtdCadastrados++;
+		p = p->prox;
+	}
+	return qtdCadastrados;
+}

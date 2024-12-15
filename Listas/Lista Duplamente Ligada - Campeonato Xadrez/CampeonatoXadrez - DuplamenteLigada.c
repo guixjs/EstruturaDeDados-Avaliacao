@@ -17,7 +17,8 @@ Descricao: Sistema para o gerenciamento de um campeonato de xadrez
 			 carregarDados,
 			 salvarDados,
 			 tamanhoLista                                          
-Autor: José Guilherme Felix da Silva Barreto                    
+Autor: José Guilherme Felix da Silva Barreto  
+Professor: Mayrton Dias                           
 Ultima alteracao: 21/11/2024                                    
  *******************************************************************/
 
@@ -132,7 +133,13 @@ int main(){
 	
 	return 0;
 }
+/*************************************************
+	NOME: atualizarElemento
+	PARÂMETROS: lista, char nomeBusca[50],char nome[50],int idade,char sexo,int rating,double pontuacao
+	RETORNO: 1 caso consiga atualizar o elemento e 0 caso não consiga
+	DESCRIÇÃO: Altera todas as informações do elemento que foi escolhido através do nome
 
+**************************************************/
 int atualizarElemento(Lista *lista,char nomeBusca[50],char nome[50],int idade,char sexo,int rating,double pontuacao){
 	if(lista == NULL){
 		printf("A lista não foi criada\n");
