@@ -274,7 +274,7 @@ Lista* excluirLista(Lista *lista){
 	NOME: imprimirElementos
 	PARÂMETROS:lista
 	RETORNO: void
-	DESCRIÇÃO: Imprime cada elemento da lista, acessando-os através do indice
+	DESCRIÇÃO: Imprime cada elemento da lista
 
 **************************************************/
 void imprimirLista(Lista *lista){
@@ -394,7 +394,7 @@ int inserirElementoID(Lista* lista, char nome[50],int idade, char sexo,int ratin
 	NOME: inserirElementoInicio
 	PARÂMETROS:lista,char nome[50],int idade,char sexo,int rating,double pontuacao
 	RETORNO: 0 caso nao consiga inserir e 1 caso consiga
-	DESCRIÇÃO: Essa funcao insere um elemento no inicio do vetor, jogando esse elemento para a primeira posicao
+	DESCRIÇÃO: Essa funcao insere um elemento no inicio da lista, jogando esse elemento para a primeira posicao
 
 **************************************************/
 int inserirElementoInicio(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao){
@@ -436,7 +436,7 @@ void limparBuffer(){
 	NOME: menuGerenciar
 	PARÂMETROS: lista
 	RETORNO: void
-	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprimi o menu "Gerenciar torneio"
+	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprime o menu "Gerenciar torneio"
 
 **************************************************/
 
@@ -558,7 +558,7 @@ void menuGerenciar(Lista *lista){
 	NOME: menuOpcoes
 	PARÂMETROS: lista
 	RETORNO: void
-	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprimi o menu "Opcoes da lista"
+	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprime o menu "Opcoes da lista"
 
 **************************************************/
 void menuOpcoes(Lista *lista){
@@ -627,7 +627,7 @@ void menuOpcoes(Lista *lista){
 	NOME: menuTorneio
 	PARÂMETROS: lista
 	RETORNO: void
-	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprimi o menu "Criar torneio"
+	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprime o menu "Criar torneio"
 
 **************************************************/
 void menuTorneio(Lista *lista){
@@ -837,8 +837,8 @@ int salvarArquivo(Lista *lista){
 /*************************************************
 	NOME: tamanhoLista
 	PARÂMETROS: lista
-	RETORNO: tamanho da lista encontrado (lista->id) ou 0 caso nao exista lista
-	DESCRIÇÃO: atribui a tamanho o valor de lista->id, e retorna tamanho que equivale a quantidade de elementos cadastrados
+	RETORNO: tamanho da lista ou 0 caso nao exista lista
+	DESCRIÇÃO: um for que percoree a lista e conta quantos nós existem, retornando essa quantidade
 
 **************************************************/
 int tamanhoLista(Lista *lista){

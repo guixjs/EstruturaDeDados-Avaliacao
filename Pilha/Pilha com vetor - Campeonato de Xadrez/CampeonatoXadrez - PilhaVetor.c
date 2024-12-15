@@ -1,18 +1,19 @@
-/****************************************************************** 
- * Nome: Lista com vetores                                        *
- * Descricao: Implementacao de lista com uso de vetores (array).  *
- *            Esse codigo possui as principais operacoes da       *
- *            lista, como:                                        *
- *            criar lista,                                        *
- *            inserir elemento,                                   *
- *            remover elemento,                                   *
- *            buscar elemento,                                    *
- *            mostrar elementos,                                  *
- *            atualizar elementos,                                *
- *            excluir lista.                                      *
- * Autor: Mayrton Dias                                            *
- * Ultima alteracao: 18/09/2024                                   *
- ******************************************************************/
+/******************************************************************* 
+Nome: Campeonato de Xadrez - Pilha com vetores                                 
+Descricao: Sistema para o gerenciamento de um campeonato de xadrez
+             Esse codigo possui as principais operacoes da lista, como:                                         
+             criar pilha,                                       
+             push (inserir elemento),                                  
+             pop(remover elemento),                                    
+             imprmirTopo
+             excluir pilha,
+             ehVazia,
+			 limparBuffer,
+			 carregarDados,
+			 salvarDados,                                         
+Autor: José Guilherme Felix da Silva Barreto  
+Professor: Mayrton Dias                                                       
+ *******************************************************************/
 
 /*Include das bibliotecas*/ 
 #include <stdio.h>
@@ -116,7 +117,7 @@ int main(){
 		case 3:
 			system("cls");//serve para limpar a tela 
 			printf("MENU PRINCIPAL>REMOVER COMPETIDOR\n===========================\n");
-			pop(pilha);
+			verifica = pop(pilha);
 			if(verifica == 1){
 				printf("Competidor removido\n");
 			}else{
@@ -164,13 +165,13 @@ int main(){
 			verifica = ehVazia(pilha);
 			if(verifica == 1){
 				printf("A pilha está vazia\n");
-			}else{
-				printf("A pilha está vazia\n");
+			}else if(verifica == 0){
+				printf("A pilha não está vazia\n");
 				if(pilha->topo == 1){
 					printf("A pilha possui %d competidor",pilha->topo);
 				}else if(pilha->topo>1){
 					printf("A pilha possui %d competidores",pilha->topo);
-			}
+				}
 			}
 			getch();
 			break;
@@ -198,8 +199,13 @@ int main(){
 	return 0;
 	
 }
+/*************************************************
+	NOME: carregarArquivos
+	PARÂMETROS: pilha
+	RETORNO: 0 caso nao consiga carregar e 1 caso consiga
+	DESCRIÇÃO: le os dados escritos no arquivo txt
 
-
+**************************************************/
 int carregarArquivo(Pilha* pilha){
 	if(pilha == NULL){
 		printf("A pilha não foi criada\n");
@@ -228,7 +234,13 @@ int carregarArquivo(Pilha* pilha){
 	fclose(arquivo);
 	return 1;	
 }
+/*************************************************
+	NOME: criarPilha
+	PARÂMETROS: -
+	RETORNO: endereco da memoria alocada ou NULL caso não consiga alocar
+	DESCRIÇÃO: Funcao responsavel pela criacao da pilha
 
+**************************************************/
 Pilha* criarPilha(){
     Pilha *nova = (Pilha*)malloc(sizeof(Pilha));
 
@@ -249,7 +261,33 @@ Pilha* criarPilha(){
 
     return nova;
 }
+/*************************************************
+	NOME: ehVazia
+	PARÂMETROS:pilha
+	RETORNO: 1 se for vazia, 0 se não for vazia e -1 para diferenciar vazia de não criada
+	DESCRIÇÃO: verifica se a lista está vazia
 
+**************************************************/
+int ehVazia(Pilha* pilha){
+	if(pilha == NULL){
+        printf("A pilha não foi criada\n");
+        return -1;
+    }
+
+    /*Verificando se a lista e vazia*/
+    if(pilha->topo == 0){
+        return  1;
+    }
+    return 0;
+}
+/*************************************************
+	NOME: excluirPilha
+	PARÂMETROS: pilha
+	RETORNO: NULL
+	DESCRIÇÃO: Funcao que apaga a pilha, liberando o espaco alocado
+	(precisa ser chamada na funcao main)
+
+**************************************************/
 Pilha* excluirPilha(Pilha *pilha){
     /*Verificando se a lista foi criada*/
     if(pilha == NULL){
@@ -264,6 +302,13 @@ Pilha* excluirPilha(Pilha *pilha){
     return NULL;
 }
 
+/*************************************************
+	NOME: imprimirTopo
+	PARÂMETROS:pilha
+	RETORNO: indice do topo
+	DESCRIÇÃO: retorna o indice do topo para que seja impresso na main
+
+**************************************************/
 int imprimirTopo(Pilha *pilha){
 
     /*Verificando se a lista foi criada*/
@@ -283,26 +328,26 @@ int imprimirTopo(Pilha *pilha){
 	return pilha->topo;
 }
 
-int ehVazia(Pilha* pilha){
-	if(pilha == NULL){
-        printf("A lista nao foi criada\n");
-        return 0;
-    }
+/*************************************************
+	NOME: limparBuffer
+	PARÂMETROS: void
+	RETORNO: void
+	DESCRIÇÃO: limpa o buffer do cmd e é chamado depois de todo scanf, para evitar bugs em scanf char
 
-    /*Verificando se a lista e vazia*/
-    if(pilha->topo == 0){
-        return  1;
-    }
-    return 0;
-}
-
+**************************************************/
 void limparBuffer(){
 	char c = 'a';
 	do{
 		c = getchar();
 	}while(c!='\n');
 }
+/*************************************************
+	NOME: pop
+	PARÂMETROS: pilha
+	RETORNO: 1 se conseguir remover ou 0 se não conseguir
+	DESCRIÇÃO: remove o elemento que estiver no topo da pilha
 
+**************************************************/
 int pop(Pilha* pilha){
 
     /*Verificando se a lista foi criada*/
@@ -319,7 +364,13 @@ int pop(Pilha* pilha){
     
     return 1;
 }
+/*************************************************
+	NOME: push
+	PARÂMETROS: pilha,char nome[50],int idade,char sexo,int rating,double pontuacao
+	RETORNO: 1 se conseguir inserir ou 0 se não conseguir
+	DESCRIÇÃO: insere um elemento no topo da pilha
 
+**************************************************/
 int push(Pilha* pilha,char nome[50],int idade,char sexo,int rating,double pontuacao){
     if(pilha == NULL){
         printf("A pilha não foi criada\n");
@@ -342,6 +393,15 @@ int push(Pilha* pilha,char nome[50],int idade,char sexo,int rating,double pontua
 
     return 1;
 }
+
+/*************************************************
+	NOME: salvarArquivos
+	PARÂMETROS: lista
+	RETORNO: 1 caso consiga salvar os arquivos e 0 caso nao consiga
+	DESCRIÇÃO: escreve no txt, todos os elementos cadastrados, além da quantidade de participantes cadastrados, para que 
+	ele consiga identificar a quantidade de repeticoes necessarias exatas no FOR (tambem usado na carregarArquivos)
+
+**************************************************/
 int salvarArquivo(Pilha* pilha){
 	if(pilha == NULL){
         printf("A pilha não foi criada\n");

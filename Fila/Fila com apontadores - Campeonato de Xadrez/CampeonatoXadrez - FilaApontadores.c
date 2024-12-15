@@ -1,17 +1,17 @@
-/****************************************************************** 
- * Nome: Lista encadeada                                          
- * Descricao: Implementacao de lista encadeada. Esse codigo possui
- *            as principais operacoes da lista, como:             
- *            criar lista,                                        
- *            inserir elemento,                                   
- *            remover elemento,                                   
- *            buscar elemento,                                    
- *            mostrar elementos,                                  
- *            atualizar elementos,                                
- *            excluir lista.                                      
- * Autor: Mayrton Dias                                            
- * Ultima alteracao: 08/10/2024                                   
- ******************************************************************/
+/******************************************************************* 
+Nome: Campeonato de Xadrez - Fila com apontadores                                
+Descricao: Sistema para o gerenciamento de um campeonato de xadrez
+             Esse codigo possui as principais operacoes da lista, como:                                         
+             criar fila,                                       
+             enqueue (inserir elemento),                                  
+             dequeue(remover elemento),                                    
+             excluir fila,
+			 limparBuffer,
+			 carregarDados,
+			 salvarDados,                                         
+Autor: José Guilherme Felix da Silva Barreto  
+Professor: Mayrton Dias                                                       
+ *******************************************************************/
  
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,6 +53,7 @@ setlocale(LC_ALL,"portuguese");
 	char nomeTemp[50], sexoTemp;
 	int ratingTemp, idadeTemp;
 	double pontuacaoTemp;
+	FilaNo *encontrado;
 	do{
 		system("cls");
 		printf("============CHECKMATE ORGANIZER!============\n");
@@ -108,9 +109,10 @@ setlocale(LC_ALL,"portuguese");
 		case 3:
 			system("cls");//serve para limpar a tela 
 			printf("MENU PRINCIPAL>REMOVER COMPETIDOR\n===========================\n");
-			dequeue(fila);
-			if(verifica == 1){
-				printf("Competidor removido\n");
+			encontrado = dequeue(fila);
+			if(encontrado != NULL){
+				printf("COMPETIDOR REMOVIDO: %s\n",encontrado->nome);
+				printf("=====================\n");
 			}else{
 				printf("Não foi possível remover o competidor\n");
 			}
@@ -178,6 +180,13 @@ setlocale(LC_ALL,"portuguese");
 
 	return 0;
 }
+/*************************************************
+	NOME: carregarArquivos
+	PARÂMETROS: fila
+	RETORNO: 0 caso nao consiga carregar e 1 caso consiga
+	DESCRIÇÃO: le os dados escritos no arquivo txt
+
+**************************************************/
 int carregarArquivo(Fila *fila){
 	if(fila == NULL){
 		printf("A fila não foi criada\n");
@@ -204,7 +213,13 @@ int carregarArquivo(Fila *fila){
 	fclose(arquivo);
 	return 1;
 }
+/*************************************************
+	NOME: criarFila
+	PARÂMETROS: -
+	RETORNO: endereco da memoria alocada ou NULL caso não consiga alocar
+	DESCRIÇÃO: Funcao responsavel pela criacao da fila
 
+**************************************************/
 Fila* criarFila(){
 	Fila* nova = (Fila*)malloc(sizeof(Fila));
 	if(nova == NULL){
@@ -217,7 +232,13 @@ Fila* criarFila(){
     /*Retonando o espaco reservado*/
     return nova;
 }
+/*************************************************
+	NOME: dequeue
+	PARÂMETROS: fila
+	RETORNO: FilaNo*, retorna o nó removido ou NULL caso não consiga remover
+	DESCRIÇÃO: remove o elemento da fila
 
+**************************************************/
 FilaNo* dequeue(Fila* fila){
     FilaNo *aux;
 
@@ -242,6 +263,13 @@ FilaNo* dequeue(Fila* fila){
     fila->inicio = fila->inicio->prox;  
     return aux;
 }
+/*************************************************
+	NOME: enqueue
+	PARÂMETROS: fila,char nome[50],int idade,char sexo,int rating,double pontuacao
+	RETORNO: 1 se conseguir inserir ou 0 se não conseguir
+	DESCRIÇÃO: insere um elemento na fila
+
+**************************************************/
 int enqueue(Fila* fila,char nome[50],int idade,char sexo,int rating,double pontuacao){
 	if(fila == NULL){
 		printf("A fila não foi criada\n");
@@ -270,7 +298,14 @@ int enqueue(Fila* fila,char nome[50],int idade,char sexo,int rating,double pontu
 	return 1;
 	
 }
+/*************************************************
+	NOME: excluirFila
+	PARÂMETROS: fila
+	RETORNO: NULL
+	DESCRIÇÃO: Funcao que apaga a fila, liberando o espaco alocado
+	(precisa ser chamada na funcao main)
 
+**************************************************/
 Fila* excluirFila(Fila* fila){
 	if(fila == NULL){
 		printf("A fila não existe\n");
@@ -285,14 +320,27 @@ Fila* excluirFila(Fila* fila){
 	free(fila);
 	return NULL;
 }
+/*************************************************
+	NOME: limparBuffer
+	PARÂMETROS: void
+	RETORNO: void
+	DESCRIÇÃO: limpa o buffer do cmd e é chamado depois de todo scanf, para evitar bugs em scanf char
 
+**************************************************/
 void limparBuffer(){
 	char c = 'a';
 	do{
 		c = getchar();
 	}while(c!='\n');
 }
+/*************************************************
+	NOME: salvarArquivos
+	PARÂMETROS: lista
+	RETORNO: 1 caso consiga salvar os arquivos e 0 caso nao consiga
+	DESCRIÇÃO: escreve no txt, todos os elementos cadastrados, além da quantidade de participantes cadastrados, para que 
+	ele consiga identificar a quantidade de repeticoes necessarias exatas no FOR (tambem usado na carregarArquivos)
 
+**************************************************/
 int salvarArquivo(Fila* fila){
 	if(fila == NULL){
 		printf("A fila não existe\n");
@@ -328,7 +376,13 @@ int salvarArquivo(Fila* fila){
 	fclose(arquivo);
 	return 1;
 }
+/*************************************************
+	NOME: tamanhoFila
+	PARÂMETROS: Quantidade de competidores cadastrados ou 0 caso esteja vazia ou não exista
+	RETORNO: void
+	DESCRIÇÃO: conta, usando um while, a quantidade de competidores cadastrados
 
+**************************************************/
 int tamanhoFila(Fila *fila){
 	if(fila == NULL){
 		printf("A fila não existe\n");

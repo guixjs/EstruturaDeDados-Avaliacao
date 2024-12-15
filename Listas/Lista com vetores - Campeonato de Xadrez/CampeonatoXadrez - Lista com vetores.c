@@ -423,7 +423,7 @@ void limparBuffer(){
 	NOME: menuGerenciar
 	PARÂMETROS: lista
 	RETORNO: void
-	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprimi o menu "Gerenciar torneio"
+	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprime o menu "Gerenciar torneio"
 
 **************************************************/
 void menuGerenciar(Lista *lista){
@@ -541,7 +541,7 @@ void menuGerenciar(Lista *lista){
 	NOME: menuOpcoes
 	PARÂMETROS: lista
 	RETORNO: void
-	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprimi o menu "Opcoes da lista"
+	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprime o menu "Opcoes da lista"
 
 **************************************************/
 void menuOpcoes(Lista *lista){
@@ -610,7 +610,7 @@ void menuOpcoes(Lista *lista){
 	NOME: menuTorneio
 	PARÂMETROS: lista
 	RETORNO: void
-	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprimi o menu "Criar torneio"
+	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprime o menu "Criar torneio"
 
 **************************************************/
 void menuTorneio(Lista *lista){

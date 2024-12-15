@@ -6,7 +6,8 @@ Descricao: Sistema para o gerenciamento de um campeonato de xadrez
              inserir elemento (Id, Inicio e final),                                    
              remover elemento,                                    
              buscar elemento,                                     
-             mostrar elementos,                                   
+             mostrar elementos,
+			 mostrarElementosOrdemInversa,                                   
              atualizar elementos,                                 
              excluir lista.
 			 Funções extras:
@@ -162,6 +163,14 @@ int atualizarElemento(Lista *lista,char nomeBusca[50],char nome[50],int idade,ch
 	}
 	return 0;
 }
+
+/************************************************* 
+	NOME: buscarElemento
+	PARÂMETROS: lista,char nomeBusca[50]
+	RETORNO: o Nó encontrado, ou NULL caso não encontre
+	DESCRIÇÃO: Um for que varre todos os nomes dos elementos e busca o nome desejado, caso encontre retorna o indice desse nome
+
+**************************************************/
 ListaNo* buscarElemento(Lista *lista, char nomeBusca[50]){
 	if(lista == NULL){
         printf("A lista nao foi criada\n");
@@ -181,6 +190,13 @@ ListaNo* buscarElemento(Lista *lista, char nomeBusca[50]){
     }
     return NULL;
 }
+/*************************************************
+	NOME: carregarArquivos
+	PARÂMETROS: lista
+	RETORNO: 0 caso nao consiga carregar e 1 caso consiga
+	DESCRIÇÃO: le os dados escritos no arquivo txt
+
+**************************************************/
 int carregarArquivos(Lista *lista){
 	int i,qtdCadastrados; //variaveis temporarias, para que em cada interacao do for, os nomes lidos sejam salvos nelas e mandandos
 	//como parametros para a funcao inserirElemento
@@ -210,7 +226,13 @@ int carregarArquivos(Lista *lista){
 	
 	return 1;
 }
+/*************************************************
+	NOME: criarLista
+	PARÂMETROS: -
+	RETORNO: endereco da memoria alocada ou NULL caso não consiga alocar
+	DESCRIÇÃO: Funcao responsavel pela criacao da lista
 
+**************************************************/
 Lista *criarLista(){
 	Lista *nova = (Lista*)malloc(sizeof(Lista));
 	
@@ -223,6 +245,14 @@ Lista *criarLista(){
 	
 	return nova;
 }
+/*************************************************
+	NOME: excluirLista
+	PARÂMETROS: lista
+	RETORNO: NULL
+	DESCRIÇÃO: Funcao que apaga a lista, liberando o espaco alocado
+	(precisa ser chamada na funcao main)
+
+**************************************************/
 Lista *excluirLista(Lista *lista){
 	ListaNo *aux;
 	
@@ -238,7 +268,13 @@ Lista *excluirLista(Lista *lista){
 	free(lista);
 	return NULL;
 }
+/*************************************************
+	NOME: imprimirElementos
+	PARÂMETROS:lista
+	RETORNO: void
+	DESCRIÇÃO: Imprime cada elemento da lista
 
+**************************************************/
 void imprimirLista(Lista *lista){
 	ListaNo *p;
 	if(lista == NULL){
@@ -260,7 +296,13 @@ void imprimirLista(Lista *lista){
 	printf("\n");
 	
 }
+/*************************************************
+	NOME: imprimirOrdemInversa
+	PARÂMETROS:lista
+	RETORNO: void
+	DESCRIÇÃO: Imprime cada elemento da lista, na ordem inversa, do último ao primeiro
 
+**************************************************/
 void imprimirOrdemInversa(Lista *lista){
 	ListaNo *p;
 	if(lista == NULL){
@@ -282,6 +324,14 @@ void imprimirOrdemInversa(Lista *lista){
 	printf("\n");
 	
 }
+
+/*************************************************
+	NOME: inserirElemento 
+	PARÂMETROS: lista,char nome[50],int idade,char sexo,int rating,double pontuacao
+	RETORNO: 0 caso nao consiga inserir e 1 caso consiga
+	DESCRIÇÃO: insere o elemento na ultima posicao da lista
+
+**************************************************/
 int inserirElemento(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao){
 	if(lista == NULL){
 		printf("A lista não foi criada\n");
@@ -310,6 +360,13 @@ int inserirElemento(Lista *lista,char nome[50],int idade,char sexo,int rating,do
 	lista->ult = nova;
     return 1;
 }
+
+/*************************************************
+	NOME: inserirElementoID
+	PARÂMETROS: lista,char nome[50],int idade,char sexo,int rating,double pontuacao,int posicao
+	RETORNO: 0 caso nao consiga inserir e 1 caso consiga
+	DESCRIÇÃO: insere um elemento na posicao escolhida pelo usuario, e que esteja dentro do intervalo permitido
+**************************************************/
 int inserirElementoID(Lista* lista, char nome[50],int idade,char sexo, int rating, double pontuacao, int posicao){
 	if(lista == NULL){
 		printf("A lista não foi criada\n");
@@ -375,7 +432,13 @@ int inserirElementoID(Lista* lista, char nome[50],int idade,char sexo, int ratin
 	}
 	return 0;
 }
+/*************************************************
+	NOME: inserirElementoInicio
+	PARÂMETROS:lista,char nome[50],int idade,char sexo,int rating,double pontuacao
+	RETORNO: 0 caso nao consiga inserir e 1 caso consiga
+	DESCRIÇÃO: Essa funcao insere um elemento no inicio da lista, jogando esse elemento para a primeira posicao
 
+**************************************************/
 int inserirElementoInicio(Lista *lista,char nome[50],int idade,char sexo,int rating,double pontuacao){	
 	if(lista == NULL){
 		printf("A lista não foi criada\n");
@@ -400,7 +463,13 @@ int inserirElementoInicio(Lista *lista,char nome[50],int idade,char sexo,int rat
 	lista->prim = nova;
 	return 1;
 }
+/*************************************************
+	NOME: limparBuffer
+	PARÂMETROS: void
+	RETORNO: void
+	DESCRIÇÃO: limpa o buffer do cmd e é chamado depois de todo scanf, para evitar bugs em scanf char
 
+**************************************************/
 void limparBuffer(){
 	char c = 'a';
 	do{
@@ -408,6 +477,13 @@ void limparBuffer(){
 	}while(c!='\n');
 }
 
+/*************************************************
+	NOME: menuGerenciar
+	PARÂMETROS: lista
+	RETORNO: void
+	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprime o menu "Gerenciar torneio"
+
+**************************************************/
 void menuGerenciar(Lista *lista){
 	int escolhaGerenciar,verificar;
 	char nomeBusca[50],nomeTemp[50], sexoTemp;
@@ -531,7 +607,7 @@ void menuGerenciar(Lista *lista){
 	NOME: menuOpcoes
 	PARÂMETROS: lista
 	RETORNO: void
-	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprimi o menu "Opcoes da lista"
+	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprime o menu "Opcoes da lista"
 
 **************************************************/
 void menuOpcoes(Lista *lista){
@@ -600,7 +676,7 @@ void menuOpcoes(Lista *lista){
 	NOME: menuTorneio
 	PARÂMETROS: lista
 	RETORNO: void
-	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprimi o menu "Criar torneio"
+	DESCRIÇÃO: uma funcao que é chamada no menu principal. Imprime o menu "Criar torneio"
 
 **************************************************/
 void menuTorneio(Lista *lista){
@@ -712,7 +788,13 @@ void menuTorneio(Lista *lista){
 		}
 	}while(escolhaTorneio!=0);
 }
+/*************************************************
+	NOME: removerElemento
+	PARÂMETROS: lista, char nomeBusca [50]
+	RETORNO: 1 se conseguir remover e 0 se não conseguir
+	DESCRIÇÃO: remove um elemento que foi buscado pelo nome
 
+**************************************************/
 
 int removerElemento(Lista *lista, char nomeBusca[50]){
 	ListaNo *p, *aux;
@@ -755,7 +837,14 @@ int removerElemento(Lista *lista, char nomeBusca[50]){
     }
     return 0;
 }
+/*************************************************
+	NOME: salvarArquivos
+	PARÂMETROS: lista
+	RETORNO: 1 caso consiga salvar os arquivos e 0 caso nao consiga
+	DESCRIÇÃO: escreve no txt, todos os elementos cadastrados, além da quantidade de participantes cadastrados, para que 
+	ele consiga identificar a quantidade de repeticoes necessarias exatas no FOR (tambem usado na carregarArquivos)
 
+**************************************************/
 int salvarArquivo(Lista *lista){
 	if(lista ==NULL){
 		printf("A lista não foi criada\n");
@@ -791,6 +880,13 @@ int salvarArquivo(Lista *lista){
     return 1;
 }
 
+/*************************************************
+	NOME: tamanhoLista
+	PARÂMETROS: lista
+	RETORNO: tamanho da lista ou 0 caso nao exista lista
+	DESCRIÇÃO: um for que percoree a lista e conta quantos nós existem, retornando essa quantidade
+
+**************************************************/
 int tamanhoLista(Lista *lista){
 	if(lista ==NULL){
 		printf("A lista não foi criada\n");
